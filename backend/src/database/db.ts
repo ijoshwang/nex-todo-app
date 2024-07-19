@@ -1,5 +1,6 @@
 import { Pool } from 'pg'
 import config from '../config'
+import { validationResult } from 'express-validator'
 
 console.log(config.db)
 
