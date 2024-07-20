@@ -1,13 +1,13 @@
-import Checklist from './Checklist'
-import Todos from './Todos'
+import List from './components/List'
 
 import './App.css'
 
 function App() {
   return (
     <>
-      <Checklist></Checklist>
-      <Todos></Todos>
+      <List></List>
+      {/* <Checklist></Checklist> */}
+      {/* <Todos></Todos> */}
     </>
   )
 }

@@ -3,21 +3,34 @@ import { apiClient } from './client'
 export interface Duty {
   id: string
   name: string
+  isCompleted: boolean
   created_at: string
   updated_at: string
-  isCompleted: boolean
 }
 
 export const getDuties = async (): Promise<Duty[]> => {
-  return apiClient.get<Duty[]>('/duties')
+  try {
+    return await apiClient.get<Duty[]>('/duties')
+  } catch (error) {
+    // Handle the error or rethrow it to be handled by the caller
+    throw new Error('Failed to fetch duties')
+  }
 }
 
 export const getDutyById = async (id: string): Promise<Duty> => {
-  return apiClient.get<Duty>(`/duties/${id}`)
+  try {
+    return await apiClient.get<Duty>(`/duties/${id}`)
+  } catch (error) {
+    throw new Error(`Failed to fetch duty with id ${id}`)
+  }
 }
 
 export const createDuty = async (name: string): Promise<Duty> => {
-  return apiClient.post<Duty>('/duties', { name, isCompleted: false })
+  try {
+    return await apiClient.post<Duty>('/duties', { name, isCompleted: false })
+  } catch (error) {
+    throw new Error('Failed to create duty')
+  }
 }
 
 export const updateDuty = async (
@@ -25,9 +38,17 @@ export const updateDuty = async (
   name: string,
   isCompleted: boolean
 ): Promise<Duty> => {
-  return apiClient.put<Duty>(`/duties/${id}`, { name, isCompleted })
+  try {
+    return await apiClient.put<Duty>(`/duties/${id}`, { name, isCompleted })
+  } catch (error) {
+    throw new Error(`Failed to update duty with id ${id}`)
+  }
 }
 
 export const deleteDuty = async (id: string): Promise<void> => {
-  return apiClient.delete<void>(`/duties/${id}`)
+  try {
+    return await apiClient.delete<void>(`/duties/${id}`)
+  } catch (error) {
+    throw new Error(`Failed to delete duty with id ${id}`)
+  }
 }
