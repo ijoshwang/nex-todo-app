@@ -1,16 +1,17 @@
 import { Router } from 'express'
+
 import {
+  createDuty,
+  deleteDuty,
   getDuties,
   getDutyById,
-  createDuty,
   updateDuty,
-  deleteDuty,
 } from '../controllers/duty.controller'
 import {
   createDutyValidation,
-  updateDutyValidation,
-  getDutyValidation,
   deleteDutyValidation,
+  getDutyValidation,
+  updateDutyValidation,
 } from '../validators/duty.validation'
 
 const router = Router()

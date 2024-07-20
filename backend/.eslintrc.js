@@ -14,12 +14,15 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint', 'unused-imports', 'simple-import-sort'],
+  ignorePatterns: ['dist', '.eslintrc.js'],
   rules: {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
     'unused-imports/no-unused-imports': 'error',
+    'no-unused-vars': 'error',
+    'no-undef': 'error',
     'padding-line-between-statements': [
       'error',
       {
