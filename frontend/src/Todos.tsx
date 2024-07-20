@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Input, Button, List, Typography, Space } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState } from 'react'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Button, Input, List, Space, Typography } from 'antd'
 
 interface Task {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 const Component: React.FC = () => {
@@ -12,24 +12,24 @@ const Component: React.FC = () => {
     { id: 1, name: 'Finish project proposal' },
     { id: 2, name: 'Schedule team meeting' },
     { id: 3, name: 'Buy groceries' },
-  ]);
-  const [newTask, setNewTask] = useState<string>('');
-  const [editingTask, setEditingTask] = useState<number | null>(null);
-  const [editedTask, setEditedTask] = useState<string>('');
+  ])
+  const [newTask, setNewTask] = useState<string>('')
+  const [editingTask, setEditingTask] = useState<number | null>(null)
+  const [editedTask, setEditedTask] = useState<string>('')
 
   const handleAddTask = () => {
     if (newTask.trim() !== '') {
       const newId =
-        tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-      setTasks([...tasks, { id: newId, name: newTask }]);
-      setNewTask('');
+        tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1
+      setTasks([...tasks, { id: newId, name: newTask }])
+      setNewTask('')
     }
-  };
+  }
 
   const handleEditTask = (task: Task) => {
-    setEditingTask(task.id);
-    setEditedTask(task.name);
-  };
+    setEditingTask(task.id)
+    setEditedTask(task.name)
+  }
 
   const handleUpdateTask = () => {
     if (editedTask.trim() !== '') {
@@ -37,15 +37,15 @@ const Component: React.FC = () => {
         tasks.map((task) =>
           task.id === editingTask ? { ...task, name: editedTask } : task
         )
-      );
-      setEditingTask(null);
-      setEditedTask('');
+      )
+      setEditingTask(null)
+      setEditedTask('')
     }
-  };
+  }
 
   const handleDeleteTask = (id: number) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+    setTasks(tasks.filter((task) => task.id !== id))
+  }
 
   return (
     <div
@@ -55,7 +55,6 @@ const Component: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        backgroundColor: '#f0f2f5',
       }}
     >
       <div
@@ -119,7 +118,7 @@ const Component: React.FC = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Component;
+export default Component

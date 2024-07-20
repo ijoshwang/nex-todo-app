@@ -17,8 +17,7 @@ module.exports = {
     ],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
-    'import/newline-after-import': 'error',
-    'import/no-duplicates': 'error',
+    'no-duplicate-imports': 'error',
     'unused-imports/no-unused-imports': 'error',
     'padding-line-between-statements': [
       'error',

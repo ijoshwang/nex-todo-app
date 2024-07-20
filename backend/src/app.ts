@@ -1,12 +1,22 @@
-import express from 'express'
 import bodyParser from 'body-parser'
-import dutyRoutes from './routes/duty.routes'
+import cors from 'cors'
+import express from 'express'
+
 import errorHandler from './middlewares/errorHandler'
+import dutyRoutes from './routes/duty.routes'
+import config from './config'
 
 const app = express()
 
+app.use(
+  cors({
+    origin: config.client.url,
+    credentials: true,
+  })
+)
+
 app.use(bodyParser.json())
-app.use('/duties', dutyRoutes)
-app.use(errorHandler) // Add the error-handling middleware
+app.use(`${config.api}/duties`, dutyRoutes)
+app.use(errorHandler)
 
 export default app

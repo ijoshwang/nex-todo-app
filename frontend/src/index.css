@@ -23,11 +23,18 @@ a:hover {
 }
 
 body {
-  margin: 0;
+  /* margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100vh; */
+  background-color: #f9f9f9;
+  background-image: radial-gradient(circle, #cfcfcf 1px, transparent 1px);
+  background-size: 16px 16px;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 h1 {
