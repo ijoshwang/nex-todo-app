@@ -1,6 +1,8 @@
 import dotenv from 'dotenv'
 
-dotenv.config()
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+console.log('🚀 ~ envFile:', envFile)
+dotenv.config({ path: envFile })
 
 const config = {
   port: process.env.PORT || 3000,

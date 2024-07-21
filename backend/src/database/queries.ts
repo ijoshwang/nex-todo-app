@@ -8,6 +8,7 @@ export const queries = {
       is_completed BOOLEAN NOT NULL DEFAULT false
     );
   `,
+  dropTable: 'DROP TABLE IF EXISTS duties',
   insertDuty: `
     INSERT INTO duties (name) VALUES ($1) RETURNING *;
   `,
