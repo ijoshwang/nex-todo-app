@@ -1,93 +1,76 @@
-import React from 'react'
-import { Controller } from 'react-hook-form'
-import { DeleteOutlined, SaveOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Input, List } from 'antd'
+import { useState } from 'react'
+import { DeleteOutlined } from '@ant-design/icons'
+import { Button, Checkbox, message } from 'antd'
 
-import { Duty } from '../services/duty'
+import { deleteDuty, Duty, updateDuty } from '../services/duty'
+
+import EditItem from './EditItem'
 
 interface ItemProps {
   item: Duty
-  index: number
-  editingIndex: number | null
-  control: any
-  handleEditItem: (index: number) => void
-  handleSaveEdit: any
-  handleCancelEdit: () => void
-  handleDeleteItem: (id: string) => void
-  handleToggleCompleted: (index: number) => void
+  saveCallback: () => void
 }
 
-const Item: React.FC<ItemProps> = ({
-  item,
-  index,
-  editingIndex,
-  control,
-  handleEditItem,
-  handleSaveEdit,
-  handleCancelEdit,
-  handleDeleteItem,
-  handleToggleCompleted,
-}) => {
+export default function Item({ item, saveCallback }: ItemProps) {
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+
+  const handleSave = async (itemName: string) => {
+    try {
+      await updateDuty(item.id, itemName, item.isCompleted)
+      setIsEditing(false)
+      saveCallback()
+    } catch (err) {
+      message.error('Failed to update duty')
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDuty(id)
+      saveCallback()
+    } catch (err) {
+      message.error('Failed to delete duty')
+    }
+  }
+
+  const handleToggle = async () => {
+    try {
+      await updateDuty(item.id, item.name, !item.isCompleted)
+      saveCallback()
+    } catch (err) {
+      message.error('Failed to update duty status')
+    }
+  }
+
   return (
-    <List.Item
-      key={item.id}
-      onClick={() => handleEditItem(index)}
-      style={{ cursor: 'pointer' }}
-    >
-      <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-        <Checkbox
-          checked={item.isCompleted}
-          onChange={() => handleToggleCompleted(index)}
-          style={{ marginRight: 8 }}
-        />
-        {editingIndex === index ? (
-          <form onSubmit={handleSaveEdit}>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field, fieldState }) => (
-                <>
-                  <Input
-                    {...field}
-                    autoFocus
-                    style={{
-                      border: fieldState.error ? '1px solid red' : 'none',
-                      outline: 'none',
-                      boxShadow: 'none',
-                      flexGrow: 1,
-                    }}
-                    onBlur={handleCancelEdit}
-                  />
-                  <Button
-                    type="text"
-                    htmlType="submit"
-                    icon={<SaveOutlined />}
-                    style={{ marginLeft: 'auto' }}
-                  />
-                  {fieldState.error && (
-                    <span style={{ color: 'red', marginLeft: 10 }}>
-                      {fieldState.error.message}
-                    </span>
-                  )}
-                </>
-              )}
-            />
-          </form>
-        ) : (
-          <span style={{ flexGrow: 1 }}>{item.name}</span>
-        )}
-        <Button
-          type="text"
-          icon={<DeleteOutlined />}
-          onClick={(e) => {
-            e.stopPropagation()
-            handleDeleteItem(item.id)
-          }}
-          style={{ marginLeft: 'auto' }}
-        />
-      </div>
-    </List.Item>
+    <li key={item.id}>
+      {isEditing ? (
+        <EditItem
+          itemName={item.name}
+          onHandleSave={handleSave}
+          onHandleCancel={() => setIsEditing(false)}
+        ></EditItem>
+      ) : (
+        <div className="item">
+          <Checkbox
+            checked={item.isCompleted}
+            onChange={handleToggle}
+            style={{ marginRight: 8 }}
+          />
+
+          <span style={{ flexGrow: 1 }} onClick={() => setIsEditing(true)}>
+            {item.name}
+          </span>
+          <Button
+            type="text"
+            icon={<DeleteOutlined />}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleDelete(item.id)
+            }}
+          />
+        </div>
+      )}
+    </li>
   )
 }
-
-export default Item

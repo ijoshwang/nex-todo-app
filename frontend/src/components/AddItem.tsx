@@ -1,72 +1,40 @@
-import React from 'react'
-import { Controller, SubmitHandler } from 'react-hook-form'
+import { useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Input, List } from 'antd'
+import { message } from 'antd'
 
+import { createDuty } from '../services/duty'
+
+import EditItem from './EditItem'
 interface AddItemProps {
-  isAdding: boolean
-  setIsAdding: (isAdding: boolean) => void
-  control: any
-  handleAddItem: SubmitHandler<any>
+  saveCallback: () => void
 }
 
-const AddItem: React.FC<AddItemProps> = ({
-  isAdding,
-  setIsAdding,
-  control,
-  handleAddItem,
-}) => {
+export default function AddItem({ saveCallback }: AddItemProps) {
+  const [isAdding, setIsAdding] = useState<boolean>(false)
+
+  const handleSave = async (itemName: string) => {
+    try {
+      await createDuty(itemName)
+      setIsAdding(false)
+      saveCallback()
+    } catch (err) {
+      message.error('Failed to add duty')
+    }
+  }
+
   return (
-    <List.Item onClick={() => setIsAdding(true)} style={{ cursor: 'pointer' }}>
+    <div className="add-item" onClick={() => setIsAdding(true)}>
       {isAdding ? (
-        <form onSubmit={handleAddItem}>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field, fieldState }) => (
-              <div
-                style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-              >
-                <Input
-                  {...field}
-                  placeholder="Item"
-                  autoFocus
-                  style={{
-                    border: fieldState.error ? '1px solid red' : 'none',
-                    outline: 'none',
-                    boxShadow: 'none',
-                    width: '100%',
-                  }}
-                  onBlur={() => setIsAdding(false)}
-                />
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  icon={<PlusOutlined />}
-                />
-                {fieldState.error && (
-                  <span style={{ color: 'red', marginLeft: 10 }}>
-                    {fieldState.error.message}
-                  </span>
-                )}
-              </div>
-            )}
-          />
-        </form>
+        <EditItem
+          onHandleSave={handleSave}
+          onHandleCancel={() => setIsAdding(false)}
+        ></EditItem>
       ) : (
-        <div
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 8 }} />
+        <>
+          <PlusOutlined style={{ marginRight: 6 }} />
           <span>Add a new item</span>
-        </div>
+        </>
       )}
-    </List.Item>
+    </div>
   )
 }
-
-export default AddItem
