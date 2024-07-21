@@ -12,6 +12,7 @@ const seedData = async () => {
 
 const setupDb = async () => {
   try {
+    // await pool.query('DROP TABLE IF EXISTS duties');
     await pool.query(queries.createTable)
     console.log('Table created!')
     await seedData()

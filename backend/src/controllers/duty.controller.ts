@@ -1,15 +1,16 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
-import logger from '../utils/logger'
-import CustomError from '../utils/customError'
+
 import { ERROR_CODES, ERROR_MESSAGES } from '../constants/errorMessages'
 import {
+  createDuty as createDutyRepo,
+  deleteDuty as deleteDutyRepo,
   getDuties as getDutiesRepo,
   getDutyById as getDutyByIdRepo,
-  createDuty as createDutyRepo,
   updateDuty as updateDutyRepo,
-  deleteDuty as deleteDutyRepo,
 } from '../repositories/duty.repository'
+import CustomError from '../utils/customError'
+import logger from '../utils/logger'
 
 export const getDuties = async (
   req: Request,
@@ -39,6 +40,7 @@ export const getDutyById = async (
   next: NextFunction
 ) => {
   const errors = validationResult(req)
+
   if (!errors.isEmpty()) {
     return next(
       new CustomError(
@@ -51,8 +53,10 @@ export const getDutyById = async (
   }
 
   const { id } = req.params
+
   try {
     const duty = await getDutyByIdRepo(id)
+
     if (!duty) {
       return next(
         new CustomError(
@@ -63,6 +67,7 @@ export const getDutyById = async (
         )
       )
     }
+
     res.json(duty)
   } catch (err) {
     const errorMessage = (err as Error).message || ERROR_MESSAGES.UNKNOWN_ERROR
@@ -84,6 +89,7 @@ export const createDuty = async (
   next: NextFunction
 ) => {
   const errors = validationResult(req)
+
   if (!errors.isEmpty()) {
     return next(
       new CustomError(
@@ -96,6 +102,7 @@ export const createDuty = async (
   }
 
   const { name } = req.body
+
   try {
     const duty = await createDutyRepo(name)
     res.status(201).json(duty)
@@ -119,6 +126,7 @@ export const updateDuty = async (
   next: NextFunction
 ) => {
   const errors = validationResult(req)
+
   if (!errors.isEmpty()) {
     return next(
       new CustomError(
@@ -131,9 +139,11 @@ export const updateDuty = async (
   }
 
   const { id } = req.params
-  const { name } = req.body
+  const { name, is_completed } = req.body
+
   try {
-    const duty = await updateDutyRepo(id, name)
+    const duty = await updateDutyRepo(id, name || is_completed)
+
     if (!duty) {
       return next(
         new CustomError(
@@ -144,6 +154,7 @@ export const updateDuty = async (
         )
       )
     }
+
     res.json(duty)
   } catch (err) {
     const errorMessage = (err as Error).message || ERROR_MESSAGES.UNKNOWN_ERROR
@@ -165,6 +176,7 @@ export const deleteDuty = async (
   next: NextFunction
 ) => {
   const errors = validationResult(req)
+
   if (!errors.isEmpty()) {
     return next(
       new CustomError(
@@ -177,8 +189,10 @@ export const deleteDuty = async (
   }
 
   const { id } = req.params
+
   try {
     const duty = await deleteDutyRepo(id)
+
     if (!duty) {
       return next(
         new CustomError(
@@ -189,6 +203,7 @@ export const deleteDuty = async (
         )
       )
     }
+
     res.status(204).send()
   } catch (err) {
     const errorMessage = (err as Error).message || ERROR_MESSAGES.UNKNOWN_ERROR
