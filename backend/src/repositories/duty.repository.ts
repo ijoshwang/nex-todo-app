@@ -24,17 +24,24 @@ export const createDuty = async (name: string): Promise<Duty> => {
   return result.rows[0]
 }
 
-export const updateDuty = async (
+export const updateDutyName = async (
   id: string,
-  nameOrStatus: string | boolean
+  name: string
 ): Promise<Duty | null> => {
-  let queryString = queries.updateDutyStatus
+  const result = await pool.query(queries.updateDutyName, [name, id])
 
-  if (typeof nameOrStatus === 'string') {
-    queryString = queries.updateDutyName
+  if (result.rows.length === 0) {
+    return null
   }
 
-  const result = await pool.query(queryString, [nameOrStatus, id])
+  return result.rows[0]
+}
+
+export const updateDutyStatus = async (
+  id: string,
+  is_completed: boolean
+): Promise<Duty | null> => {
+  const result = await pool.query(queries.updateDutyStatus, [is_completed, id])
 
   if (result.rows.length === 0) {
     return null

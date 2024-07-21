@@ -7,7 +7,8 @@ import {
   deleteDuty as deleteDutyRepo,
   getDuties as getDutiesRepo,
   getDutyById as getDutyByIdRepo,
-  updateDuty as updateDutyRepo,
+  updateDutyName as updateDutyNameRepo,
+  updateDutyStatus as updateDutyStatusRepo,
 } from '../repositories/duty.repository'
 import CustomError from '../utils/customError'
 import logger from '../utils/logger'
@@ -142,7 +143,9 @@ export const updateDuty = async (
   const { name, is_completed } = req.body
 
   try {
-    const duty = await updateDutyRepo(id, name || is_completed)
+    const duty = name
+      ? await updateDutyNameRepo(id, name)
+      : await updateDutyStatusRepo(id, is_completed)
 
     if (!duty) {
       return next(

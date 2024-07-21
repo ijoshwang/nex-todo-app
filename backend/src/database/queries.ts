@@ -12,7 +12,7 @@ export const queries = {
     INSERT INTO duties (name) VALUES ($1) RETURNING *;
   `,
   selectAllDuties: `
-    SELECT id, name, created_at, updated_at, is_completed FROM duties;
+    SELECT id, name, created_at, updated_at, is_completed FROM duties ORDER BY created_at ASC;
   `,
   selectDutyById: `
     SELECT * FROM duties WHERE id = $1;
