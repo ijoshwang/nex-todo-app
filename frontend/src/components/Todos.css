@@ -44,11 +44,28 @@
 
 #todos .edit-item {
   display: flex;
+  align-items: center;
   width: 100%;
+  position: relative;
 }
 
 #todos .edit-input {
   font-size: 18px;
   line-height: 2;
-  padding: 0 0 0 24px;
+  margin: 0 10px 0 14px;
+  padding: 0 0 0 10px;
+  /* background-color: #fff;
+  border-radius: 4px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08); */
+}
+
+#todos .edit-item .error-message {
+  font-size: 14px;
+  color: tomato;
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translateY(-50%);
 }
