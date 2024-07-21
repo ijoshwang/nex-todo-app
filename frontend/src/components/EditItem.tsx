@@ -33,7 +33,7 @@ export default function EditItem({
   const onSave: SubmitHandler<Inputs> = (data) => {
     const { itemName } = data
 
-    if (itemName === '') {
+    if (itemName.trim() === '') {
       onCancel()
     } else {
       onHandleSave(itemName)
