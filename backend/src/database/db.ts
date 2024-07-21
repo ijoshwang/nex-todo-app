@@ -1,8 +1,6 @@
-import { Pool } from 'pg'
+import { Pool, QueryResultRow } from 'pg'
 
 import config from '../config'
-
-console.log(config.db)
 
 const pool = new Pool({
   host: config.db.host,
@@ -20,5 +18,14 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err)
   process.exit(-1)
 })
+
+export const queryDatabase = async <T extends QueryResultRow>(
+  query: string,
+  values: unknown[]
+): Promise<T[]> => {
+  const result = await pool.query<T>(query, values)
+
+  return result.rows
+}
 
 export default pool

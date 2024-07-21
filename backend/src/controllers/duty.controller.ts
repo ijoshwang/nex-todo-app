@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 
+import { Duty } from '@/models/duty.model'
+
 import { ERROR_CODES, ERROR_MESSAGES } from '../constants/errorMessages'
 import {
   createDuty as createDutyRepo,
@@ -13,9 +15,13 @@ import {
 import CustomError from '../utils/customError'
 import logger from '../utils/logger'
 
+type ReqParams<T> = Request<T>
+type ReqBody<T> = Request<Record<string, unknown>, unknown, T>
+type ResBody<T> = Response<T>
+
 export const getDuties = async (
-  req: Request,
-  res: Response,
+  req: ReqParams<unknown>,
+  res: ResBody<Duty[]>,
   next: NextFunction
 ) => {
   try {
@@ -36,8 +42,8 @@ export const getDuties = async (
 }
 
 export const getDutyById = async (
-  req: Request,
-  res: Response,
+  req: ReqParams<{ id: string }>,
+  res: ResBody<Duty>,
   next: NextFunction
 ) => {
   const errors = validationResult(req)
@@ -85,8 +91,8 @@ export const getDutyById = async (
 }
 
 export const createDuty = async (
-  req: Request,
-  res: Response,
+  req: ReqBody<{ name: string }>,
+  res: ResBody<Duty>,
   next: NextFunction
 ) => {
   const errors = validationResult(req)
@@ -122,8 +128,9 @@ export const createDuty = async (
 }
 
 export const updateDuty = async (
-  req: Request,
-  res: Response,
+  req: ReqParams<{ id: string }> &
+    ReqBody<{ name?: string; is_completed?: boolean }>,
+  res: ResBody<Duty>,
   next: NextFunction
 ) => {
   const errors = validationResult(req)
@@ -143,9 +150,10 @@ export const updateDuty = async (
   const { name, is_completed } = req.body
 
   try {
-    const duty = name
-      ? await updateDutyNameRepo(id, name)
-      : await updateDutyStatusRepo(id, is_completed)
+    const duty =
+      name !== undefined
+        ? await updateDutyNameRepo(id, name)
+        : await updateDutyStatusRepo(id, is_completed!)
 
     if (!duty) {
       return next(
@@ -174,8 +182,8 @@ export const updateDuty = async (
 }
 
 export const deleteDuty = async (
-  req: Request,
-  res: Response,
+  req: ReqParams<{ id: string }>,
+  res: ResBody<null>,
   next: NextFunction
 ) => {
   const errors = validationResult(req)

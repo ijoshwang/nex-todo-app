@@ -20,8 +20,12 @@ export const queries = {
   updateDuty: `
     UPDATE duties SET name = $1, is_completed = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *;
   `,
-  updateDutyName: `UPDATE duties SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
-  updateDutyStatus: `UPDATE duties SET is_completed = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
+  updateDutyName: `
+    UPDATE duties SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *
+  `,
+  updateDutyStatus: `
+    UPDATE duties SET is_completed = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *
+  `,
   deleteDuty: `
     DELETE FROM duties WHERE id = $1 RETURNING *;
   `,
