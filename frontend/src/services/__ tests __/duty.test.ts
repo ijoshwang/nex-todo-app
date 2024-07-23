@@ -1,4 +1,5 @@
-import { DutyDTO } from '../../models'
+import { Duty, DutyDTO } from '@/models'
+
 import { apiClient } from '../client'
 import {
   createDuty,
@@ -8,78 +9,67 @@ import {
   updateDuty,
 } from '../duty'
 
-jest.mock('../client')
-
-const mockApiClient = apiClient as jest.Mocked<typeof apiClient>
+jest.mock('../client', () => ({
+  apiClient: {
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}))
 
 describe('Duty Service', () => {
+  const fixedDateString = new Date().toISOString()
+
+  const mockDutyDTO: DutyDTO = {
+    id: '1',
+    name: 'Test Duty',
+    is_completed: false,
+    created_at: fixedDateString,
+    updated_at: fixedDateString,
+  }
+
+  const mockDuty: Duty = {
+    id: '1',
+    name: 'Test Duty',
+    isCompleted: false,
+    createdAt: fixedDateString,
+    updatedAt: fixedDateString,
+  }
+
   afterEach(() => {
     jest.clearAllMocks()
   })
 
   describe('getDuties', () => {
-    it('should fetch and return duties', async () => {
-      const mockDuties: DutyDTO[] = [
-        {
-          id: '1',
-          name: 'Test Duty',
-          is_completed: false,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]
+    it('should fetch and transform duties successfully', async () => {
+      jest.mocked(apiClient.get).mockResolvedValue([mockDutyDTO])
 
-      mockApiClient.get.mockResolvedValue(mockDuties)
+      const duties = await getDuties()
 
-      const result = await getDuties()
-
-      expect(mockApiClient.get).toHaveBeenCalledWith('/duties')
-      expect(result).toEqual([
-        {
-          id: '1',
-          name: 'Test Duty',
-          isCompleted: false,
-          createdAt: mockDuties[0].created_at,
-          updatedAt: mockDuties[0].updated_at,
-        },
-      ])
+      expect(apiClient.get).toHaveBeenCalledWith('/duties')
+      expect(duties).toEqual([mockDuty])
     })
 
     it('should throw an error if fetching duties fails', async () => {
-      mockApiClient.get.mockRejectedValue(new Error('Failed to fetch duties'))
+      jest.mocked(apiClient.get).mockRejectedValue(new Error('API Error'))
 
       await expect(getDuties()).rejects.toThrow('Failed to fetch duties')
     })
   })
 
   describe('getDutyById', () => {
-    it('should fetch and return a duty by ID', async () => {
-      const mockDuty: DutyDTO = {
-        id: '1',
-        name: 'Test Duty',
-        is_completed: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
+    it('should fetch and transform a duty by ID successfully', async () => {
+      jest.mocked(apiClient.get).mockResolvedValue(mockDutyDTO)
 
-      mockApiClient.get.mockResolvedValue(mockDuty)
+      const duty = await getDutyById('1')
 
-      const result = await getDutyById('1')
-
-      expect(mockApiClient.get).toHaveBeenCalledWith('/duties/1')
-      expect(result).toEqual({
-        id: '1',
-        name: 'Test Duty',
-        isCompleted: false,
-        createdAt: mockDuty.created_at,
-        updatedAt: mockDuty.updated_at,
-      })
+      expect(apiClient.get).toHaveBeenCalledWith('/duties/1')
+      expect(duty).toEqual(mockDuty)
     })
 
-    it('should throw an error if fetching duty by ID fails', async () => {
-      mockApiClient.get.mockRejectedValue(
-        new Error('Failed to fetch duty with id 1')
-      )
+    it('should throw an error if fetching the duty by ID fails', async () => {
+      jest.mocked(apiClient.get).mockRejectedValue(new Error('API Error'))
 
       await expect(getDutyById('1')).rejects.toThrow(
         'Failed to fetch duty with id 1'
@@ -88,33 +78,19 @@ describe('Duty Service', () => {
   })
 
   describe('createDuty', () => {
-    it('should create and return a new duty', async () => {
-      const mockDuty: DutyDTO = {
-        id: '1',
-        name: 'Test Duty',
-        is_completed: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
+    it('should create and transform a duty successfully', async () => {
+      jest.mocked(apiClient.post).mockResolvedValue(mockDutyDTO)
 
-      mockApiClient.post.mockResolvedValue(mockDuty)
+      const duty = await createDuty('Test Duty')
 
-      const result = await createDuty('Test Duty')
-
-      expect(mockApiClient.post).toHaveBeenCalledWith('/duties', {
+      expect(apiClient.post).toHaveBeenCalledWith('/duties', {
         name: 'Test Duty',
       })
-      expect(result).toEqual({
-        id: '1',
-        name: 'Test Duty',
-        isCompleted: false,
-        createdAt: mockDuty.created_at,
-        updatedAt: mockDuty.updated_at,
-      })
+      expect(duty).toEqual(mockDuty)
     })
 
-    it('should throw an error if creating duty fails', async () => {
-      mockApiClient.post.mockRejectedValue(new Error('Failed to create duty'))
+    it('should throw an error if creating the duty fails', async () => {
+      jest.mocked(apiClient.post).mockRejectedValue(new Error('API Error'))
 
       await expect(createDuty('Test Duty')).rejects.toThrow(
         'Failed to create duty'
@@ -123,60 +99,30 @@ describe('Duty Service', () => {
   })
 
   describe('updateDuty', () => {
-    it('should update and return a duty with new name', async () => {
-      const mockDuty: DutyDTO = {
-        id: '1',
-        name: 'Updated Duty',
-        is_completed: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
+    it('should update and transform a duty name successfully', async () => {
+      jest.mocked(apiClient.put).mockResolvedValue(mockDutyDTO)
 
-      mockApiClient.put.mockResolvedValue(mockDuty)
+      const duty = await updateDuty('1', 'Updated Duty')
 
-      const result = await updateDuty('1', 'Updated Duty')
-
-      expect(mockApiClient.put).toHaveBeenCalledWith('/duties/1', {
+      expect(apiClient.put).toHaveBeenCalledWith('/duties/1', {
         name: 'Updated Duty',
       })
-      expect(result).toEqual({
-        id: '1',
-        name: 'Updated Duty',
-        isCompleted: false,
-        createdAt: mockDuty.created_at,
-        updatedAt: mockDuty.updated_at,
-      })
+      expect(duty).toEqual(mockDuty)
     })
 
-    it('should update and return a duty with new status', async () => {
-      const mockDuty: DutyDTO = {
-        id: '1',
-        name: 'Test Duty',
-        is_completed: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
+    it('should update and transform a duty status successfully', async () => {
+      jest.mocked(apiClient.put).mockResolvedValue(mockDutyDTO)
 
-      mockApiClient.put.mockResolvedValue(mockDuty)
+      const duty = await updateDuty('1', undefined, true)
 
-      const result = await updateDuty('1', undefined, true)
-
-      expect(mockApiClient.put).toHaveBeenCalledWith('/duties/1', {
+      expect(apiClient.put).toHaveBeenCalledWith('/duties/1', {
         is_completed: true,
       })
-      expect(result).toEqual({
-        id: '1',
-        name: 'Test Duty',
-        isCompleted: true,
-        createdAt: mockDuty.created_at,
-        updatedAt: mockDuty.updated_at,
-      })
+      expect(duty).toEqual(mockDuty)
     })
 
-    it('should throw an error if updating duty fails', async () => {
-      mockApiClient.put.mockRejectedValue(
-        new Error('Failed to update duty with id 1')
-      )
+    it('should throw an error if updating the duty fails', async () => {
+      jest.mocked(apiClient.put).mockRejectedValue(new Error('API Error'))
 
       await expect(updateDuty('1', 'Updated Duty')).rejects.toThrow(
         'Failed to update duty with id 1'
@@ -186,17 +132,15 @@ describe('Duty Service', () => {
 
   describe('deleteDuty', () => {
     it('should delete a duty successfully', async () => {
-      mockApiClient.delete.mockResolvedValue({})
+      jest.mocked(apiClient.delete).mockResolvedValue(undefined)
 
       await deleteDuty('1')
 
-      expect(mockApiClient.delete).toHaveBeenCalledWith('/duties/1')
+      expect(apiClient.delete).toHaveBeenCalledWith('/duties/1')
     })
 
-    it('should throw an error if deleting duty fails', async () => {
-      mockApiClient.delete.mockRejectedValue(
-        new Error('Failed to delete duty with id 1')
-      )
+    it('should throw an error if deleting the duty fails', async () => {
+      jest.mocked(apiClient.delete).mockRejectedValue(new Error('API Error'))
 
       await expect(deleteDuty('1')).rejects.toThrow(
         'Failed to delete duty with id 1'

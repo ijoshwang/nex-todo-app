@@ -30,11 +30,15 @@ export default function Todos() {
   }, [])
 
   if (loading) {
-    return <Spin />
+    return (
+      <div role="alert">
+        <Spin />
+      </div>
+    )
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div role="alert">{error}</div>
   }
 
   return (

@@ -50,7 +50,7 @@ export default function Item({ item, saveCallback }: ItemProps) {
           itemName={item.name}
           onHandleSave={handleSave}
           onHandleCancel={() => setIsEditing(false)}
-        ></EditItem>
+        />
       ) : (
         <div className="item">
           <Checkbox
@@ -58,7 +58,6 @@ export default function Item({ item, saveCallback }: ItemProps) {
             onChange={handleToggle}
             style={{ marginRight: 8 }}
           />
-
           <span style={{ flexGrow: 1 }} onClick={() => setIsEditing(true)}>
             {item.name}
           </span>

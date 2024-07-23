@@ -42,23 +42,11 @@ export default function EditItem({
 
   return (
     <div className="edit-item">
-      {/* <Input
-        className="edit-input"
-        variant="borderless"
-        autoFocus
-        value={value}
-        placeholder="Add a new item"
-        onChange={(e) => setValue(e.target.value)}
-        onPressEnter={handleSubmit(onSave)}
-        onBlur={onCancel}
-        {...register('item')}
-        required
-      /> */}
       <Controller
         name="itemName"
         control={control}
         rules={{
-          maxLength: 10,
+          maxLength: 100, // Fixed the max length here
         }}
         render={({ field }) => (
           <Input
