@@ -1,15 +1,14 @@
 import { Duty, DutyDTO } from '@/models'
-
-import { apiClient } from '../client'
+import { apiClient } from '@/services/client'
 import {
   createDuty,
   deleteDuty,
   getDuties,
   getDutyById,
   updateDuty,
-} from '../duty'
+} from '@/services/duty'
 
-jest.mock('../client', () => ({
+jest.mock('@/services/client', () => ({
   apiClient: {
     get: jest.fn(),
     post: jest.fn(),

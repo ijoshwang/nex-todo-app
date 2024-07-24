@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { Duty } from '@/models'
 import { deleteDuty, updateDuty } from '@/services/duty'
 
-import Item from '../Item'
+import Item from '../../components/Item'
 
 jest.mock('@/services/duty')
 jest.mock('antd', () => {

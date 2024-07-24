@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App Component renders the whole app correctly 1`] = `
+<div>
+  <div
+    role="alert"
+  >
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      class="ant-spin ant-spin-spinning css-dev-only-do-not-override-1uq9j6g"
+    >
+      <span
+        class="ant-spin-dot-holder"
+      >
+        <span
+          class="ant-spin-dot ant-spin-dot-spin"
+        >
+          <i
+            class="ant-spin-dot-item"
+          />
+          <i
+            class="ant-spin-dot-item"
+          />
+          <i
+            class="ant-spin-dot-item"
+          />
+          <i
+            class="ant-spin-dot-item"
+          />
+        </span>
+      </span>
+    </div>
+  </div>
+</div>
+`;

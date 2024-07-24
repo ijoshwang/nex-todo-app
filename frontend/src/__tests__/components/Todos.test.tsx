@@ -4,7 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { Duty } from '@/models'
 import { getDuties } from '@/services/duty'
 
-import Todos from '../Todos'
+import Todos from '../../components/Todos'
 
 // Mock the getDuties service
 jest.mock('@/services/duty', () => ({

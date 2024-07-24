@@ -6,7 +6,7 @@ import { createDuty } from '@/services/duty'
 
 import '@testing-library/jest-dom'
 
-import AddItem from '../AddItem'
+import AddItem from '../../components/AddItem'
 
 // Mock the createDuty function
 jest.mock('@/services/duty', () => ({
