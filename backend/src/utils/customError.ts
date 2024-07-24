@@ -1,5 +1,3 @@
-import { ERROR_CODES, ERROR_MESSAGES } from '../constants/errorMessages'
-
 class CustomError extends Error {
   statusCode: number
   errorCode: string

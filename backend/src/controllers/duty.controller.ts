@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import { validationResult } from 'express-validator'
+import {
+  FieldValidationError,
+  ValidationError,
+  validationResult,
+} from 'express-validator'
 
 import { Duty } from '@/models/duty.model'
 
@@ -18,6 +22,60 @@ import logger from '../utils/logger'
 type ReqParams<T> = Request<T>
 type ReqBody<T> = Request<Record<string, unknown>, unknown, T>
 type ResBody<T> = Response<T>
+// Define the FieldValidationError interface to match the actual structure
+// Define the FieldValidationError interface to match the actual structure
+interface CustomFieldValidationError extends FieldValidationError {
+  param: string
+}
+
+// Type guard to check if ValidationError is a CustomFieldValidationError
+const isFieldValidationError = (
+  error: ValidationError
+): error is CustomFieldValidationError => {
+  return (error as CustomFieldValidationError).param !== undefined
+}
+
+const getValidationError = (error: ValidationError) => {
+  if (!isFieldValidationError(error)) {
+    return new CustomError(
+      error.msg,
+      400,
+      ERROR_CODES.VALIDATION_FAILED,
+      JSON.stringify({ error: error.msg })
+    )
+  }
+
+  switch (error.param) {
+    case 'id':
+      return new CustomError(
+        ERROR_MESSAGES.INVALID_ID,
+        400,
+        ERROR_CODES.INVALID_ID,
+        JSON.stringify(error)
+      )
+    case 'name':
+      return new CustomError(
+        ERROR_MESSAGES.INVALID_NAME,
+        400,
+        ERROR_CODES.INVALID_NAME,
+        JSON.stringify(error)
+      )
+    case 'is_completed':
+      return new CustomError(
+        ERROR_MESSAGES.INVALID_IS_COMPLETED,
+        400,
+        ERROR_CODES.INVALID_IS_COMPLETED,
+        JSON.stringify(error)
+      )
+    default:
+      return new CustomError(
+        error.msg,
+        400,
+        ERROR_CODES.VALIDATION_FAILED,
+        JSON.stringify(error)
+      )
+  }
+}
 
 export const getDuties = async (
   req: ReqParams<unknown>,
@@ -49,14 +107,9 @@ export const getDutyById = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return next(
-      new CustomError(
-        ERROR_MESSAGES.VALIDATION_FAILED,
-        400,
-        ERROR_CODES.VALIDATION_FAILED,
-        JSON.stringify(errors.array())
-      )
-    )
+    const firstError = errors.array()[0]
+
+    return next(getValidationError(firstError))
   }
 
   const { id } = req.params
@@ -98,14 +151,9 @@ export const createDuty = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return next(
-      new CustomError(
-        ERROR_MESSAGES.VALIDATION_FAILED,
-        400,
-        ERROR_CODES.VALIDATION_FAILED,
-        JSON.stringify(errors.array())
-      )
-    )
+    const firstError = errors.array()[0]
+
+    return next(getValidationError(firstError))
   }
 
   const { name } = req.body
@@ -136,14 +184,9 @@ export const updateDuty = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return next(
-      new CustomError(
-        ERROR_MESSAGES.VALIDATION_FAILED,
-        400,
-        ERROR_CODES.VALIDATION_FAILED,
-        JSON.stringify(errors.array())
-      )
-    )
+    const firstError = errors.array()[0]
+
+    return next(getValidationError(firstError))
   }
 
   const { id } = req.params
@@ -189,14 +232,9 @@ export const deleteDuty = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return next(
-      new CustomError(
-        ERROR_MESSAGES.VALIDATION_FAILED,
-        400,
-        ERROR_CODES.VALIDATION_FAILED,
-        JSON.stringify(errors.array())
-      )
-    )
+    const firstError = errors.array()[0]
+
+    return next(getValidationError(firstError))
   }
 
   const { id } = req.params

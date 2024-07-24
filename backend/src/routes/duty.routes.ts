@@ -11,8 +11,7 @@ import {
   createDutyValidation,
   deleteDutyValidation,
   getDutyValidation,
-  updateDutyNameValidation,
-  updateDutyStatusValidation,
+  updateDutyValidation,
 } from '../validators/duty.validation'
 
 const router = Router()
@@ -20,8 +19,7 @@ const router = Router()
 router.get('/', getDuties)
 router.get('/:id', getDutyValidation, getDutyById)
 router.post('/', createDutyValidation, createDuty)
-router.put('/:id', updateDutyNameValidation, updateDuty)
-router.put('/:id/status', updateDutyStatusValidation, updateDuty)
+router.put('/:id', updateDutyValidation, updateDuty)
 router.delete('/:id', deleteDutyValidation, deleteDuty)
 
 export default router

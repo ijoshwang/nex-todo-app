@@ -1,9 +1,9 @@
 import { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import '@testing-library/jest-dom'
+import EditItem from '@/components/EditItem'
 
-import EditItem from '../../components/EditItem'
+import '@testing-library/jest-dom'
 
 // Mock the props
 const mockHandleSave = jest.fn()

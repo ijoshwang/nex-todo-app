@@ -42,7 +42,13 @@ class APIClient {
       throw new HTTPError('HTTP Error', response.status, responseBody)
     }
 
-    return response.json()
+    // Check if response has content
+    if (response.status === 204) {
+      // No content to parse
+      return {} as T
+    }
+
+    return response.json().catch(() => ({}) as T)
   }
 
   get<T>(url: string, headers?: HeadersInit): Promise<T> {

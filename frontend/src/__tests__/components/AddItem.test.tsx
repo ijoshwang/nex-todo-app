@@ -2,11 +2,10 @@ import { act } from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { message } from 'antd'
 
+import AddItem from '@/components/AddItem'
 import { createDuty } from '@/services/duty'
 
 import '@testing-library/jest-dom'
-
-import AddItem from '../../components/AddItem'
 
 // Mock the createDuty function
 jest.mock('@/services/duty', () => ({

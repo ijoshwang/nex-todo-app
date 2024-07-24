@@ -40,6 +40,17 @@ const mockResponse = <T>(): Response<T> => {
 
 const mockNext: NextFunction = jest.fn()
 
+const handleValidationError = (mockNext: NextFunction, errorMsg: string) => {
+  mockNext(
+    new CustomError(
+      errorMsg,
+      400,
+      ERROR_CODES.VALIDATION_FAILED,
+      JSON.stringify([{ msg: 'Validation error' }])
+    )
+  )
+}
+
 describe('Duty Controller', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -117,19 +128,12 @@ describe('Duty Controller', () => {
 
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Validation error' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_ID }],
       } as unknown as Result<ValidationError>)
 
       await getDutyById(req, res, mockNext)
 
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Validation error' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_ID)
     })
 
     it('should handle not found errors', async () => {
@@ -177,26 +181,18 @@ describe('Duty Controller', () => {
       )
     })
 
-    // Additional edge case for invalid ID format
     it('should handle invalid ID format', async () => {
       const req = mockRequest<{ id: string }, unknown>({ id: 'invalid-id' }, {})
       const res = mockResponse<Duty>()
 
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Invalid ID format' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_ID }],
       } as unknown as Result<ValidationError>)
 
       await getDutyById(req, res, mockNext)
 
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Invalid ID format' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_ID)
     })
   })
 
@@ -232,17 +228,10 @@ describe('Duty Controller', () => {
       const res = mockResponse<Duty>()
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Validation error' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_NAME }],
       } as unknown as Result<ValidationError>)
       await createDuty(req, res, mockNext)
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Validation error' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_NAME)
     })
 
     it('should handle repository errors', async () => {
@@ -267,7 +256,6 @@ describe('Duty Controller', () => {
       )
     })
 
-    // Additional edge case for empty name
     it('should handle empty name', async () => {
       const req = mockRequest<Record<string, unknown>, { name: string }>(
         {},
@@ -276,20 +264,12 @@ describe('Duty Controller', () => {
       const res = mockResponse<Duty>()
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Name cannot be empty' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_NAME }],
       } as unknown as Result<ValidationError>)
       await createDuty(req, res, mockNext)
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Name cannot be empty' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_NAME)
     })
 
-    // Additional edge case for very long name
     it('should handle very long name', async () => {
       const longName = 'a'.repeat(101)
       const req = mockRequest<Record<string, unknown>, { name: string }>(
@@ -299,17 +279,10 @@ describe('Duty Controller', () => {
       const res = mockResponse<Duty>()
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Name exceeds maximum length' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_NAME }],
       } as unknown as Result<ValidationError>)
       await createDuty(req, res, mockNext)
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Name exceeds maximum length' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_NAME)
     })
   })
 
@@ -375,19 +348,12 @@ describe('Duty Controller', () => {
 
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Validation error' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_ID }],
       } as unknown as Result<ValidationError>)
 
       await updateDuty(req, res, mockNext)
 
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Validation error' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_ID)
     })
 
     it('should handle not found errors', async () => {
@@ -441,7 +407,6 @@ describe('Duty Controller', () => {
       )
     })
 
-    // Additional edge case when both name and is_completed are provided
     it('should handle both name and is_completed being provided', async () => {
       const mockDuty: Duty = {
         id: '1',
@@ -468,7 +433,6 @@ describe('Duty Controller', () => {
       expect(mockNext).not.toHaveBeenCalled()
     })
 
-    // Additional edge case when neither name nor is_completed is provided
     it('should handle neither name nor is_completed being provided', async () => {
       const req = mockRequest<
         { id: string },
@@ -478,16 +442,16 @@ describe('Duty Controller', () => {
 
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Either name or is_completed must be provided' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_NAME }],
       } as unknown as Result<ValidationError>)
 
       await updateDuty(req, res, mockNext)
 
       expect(mockNext).toHaveBeenCalledWith(
         new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
+          ERROR_MESSAGES.INVALID_NAME,
           400,
-          ERROR_CODES.VALIDATION_FAILED,
+          ERROR_CODES.INVALID_NAME,
           JSON.stringify([
             { msg: 'Either name or is_completed must be provided' },
           ])
@@ -522,17 +486,10 @@ describe('Duty Controller', () => {
       const res = mockResponse<null>()
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Validation error' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_ID }],
       } as unknown as Result<ValidationError>)
       await deleteDuty(req, res, mockNext)
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Validation error' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_ID)
     })
 
     it('should handle not found errors', async () => {
@@ -572,23 +529,15 @@ describe('Duty Controller', () => {
       )
     })
 
-    // Additional edge case for invalid ID format
     it('should handle invalid ID format', async () => {
       const req = mockRequest<{ id: string }, unknown>({ id: 'invalid-id' }, {})
       const res = mockResponse<null>()
       jest.mocked(validationResult).mockReturnValue({
         isEmpty: () => false,
-        array: () => [{ msg: 'Invalid ID format' }],
+        array: () => [{ msg: ERROR_MESSAGES.INVALID_ID }],
       } as unknown as Result<ValidationError>)
       await deleteDuty(req, res, mockNext)
-      expect(mockNext).toHaveBeenCalledWith(
-        new CustomError(
-          ERROR_MESSAGES.VALIDATION_FAILED,
-          400,
-          ERROR_CODES.VALIDATION_FAILED,
-          JSON.stringify([{ msg: 'Invalid ID format' }])
-        )
-      )
+      handleValidationError(mockNext, ERROR_MESSAGES.INVALID_ID)
     })
   })
 })

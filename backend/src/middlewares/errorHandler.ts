@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from 'express'
-import CustomError from '../utils/customError'
-import { ERROR_MESSAGES } from '../constants/errorMessages'
+import { Request, Response } from 'express'
 
-const errorHandler = (
-  err: CustomError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+import { ERROR_MESSAGES } from '../constants/errorMessages'
+import CustomError from '../utils/customError'
+
+const errorHandler = (err: CustomError, req: Request, res: Response) => {
   const statusCode = err.statusCode || 500
   const errorCode = err.errorCode || 'ERR_INTERNAL_SERVER_ERROR'
   const response = {

@@ -28,6 +28,7 @@ export default function Item({ item, saveCallback }: ItemProps) {
   const handleDelete = async (id: string) => {
     try {
       await deleteDuty(id)
+      message.success('Duty has been deleted')
       saveCallback()
     } catch (err) {
       message.error('Failed to delete duty')
@@ -36,7 +37,7 @@ export default function Item({ item, saveCallback }: ItemProps) {
 
   const handleToggle = async () => {
     try {
-      await updateDuty(item.id, item.name, !item.isCompleted)
+      await updateDuty(item.id, undefined, !item.isCompleted)
       saveCallback()
     } catch (err) {
       message.error('Failed to update duty status')
@@ -44,7 +45,7 @@ export default function Item({ item, saveCallback }: ItemProps) {
   }
 
   return (
-    <li key={item.id}>
+    <li key={item.id} className={item.isCompleted ? 'is-completed' : ''}>
       {isEditing ? (
         <EditItem
           itemName={item.name}
@@ -52,14 +53,21 @@ export default function Item({ item, saveCallback }: ItemProps) {
           onHandleCancel={() => setIsEditing(false)}
         />
       ) : (
-        <div className="item">
+        <div className="item" onClick={handleToggle}>
           <Checkbox
             checked={item.isCompleted}
-            onChange={handleToggle}
+            // onChange={handleToggle}
             style={{ marginRight: 8 }}
           />
-          <span style={{ flexGrow: 1 }} onClick={() => setIsEditing(true)}>
-            {item.name}
+          <span style={{ flex: 1 }}>
+            <span
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsEditing(true)
+              }}
+            >
+              {item.name}
+            </span>
           </span>
           <Button
             type="text"

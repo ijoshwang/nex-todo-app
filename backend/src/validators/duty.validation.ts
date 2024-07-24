@@ -8,7 +8,7 @@ export const createDutyValidation = [
     .withMessage('Name must be between 1 and 100 characters'),
 ]
 
-export const updateDutyNameValidation = [
+export const updateDutyValidation = [
   param('id').isUUID().withMessage('ID must be a valid UUID'),
   body('name')
     .optional()
@@ -16,10 +16,6 @@ export const updateDutyNameValidation = [
     .withMessage('Name must be a string')
     .isLength({ min: 1, max: 100 })
     .withMessage('Name must be between 1 and 100 characters'),
-]
-
-export const updateDutyStatusValidation = [
-  param('id').isUUID().withMessage('ID must be a valid UUID'),
   body('is_completed')
     .optional()
     .isBoolean()

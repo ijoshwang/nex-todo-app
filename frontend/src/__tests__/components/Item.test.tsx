@@ -1,10 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { message } from 'antd'
 
+import Item from '@/components/Item'
 import { Duty } from '@/models'
 import { deleteDuty, updateDuty } from '@/services/duty'
-
-import Item from '../../components/Item'
 
 jest.mock('@/services/duty')
 jest.mock('antd', () => {
@@ -15,6 +14,7 @@ jest.mock('antd', () => {
     message: {
       ...originalAntd.message,
       error: jest.fn(),
+      success: jest.fn(),
     },
   }
 })
@@ -76,6 +76,7 @@ describe('Item Component', () => {
 
     await waitFor(() => {
       expect(deleteDuty).toHaveBeenCalledWith('1')
+      expect(message.success).toHaveBeenCalledWith('Duty has been deleted')
     })
     expect(mockSaveCallback).toHaveBeenCalled()
   })
@@ -86,7 +87,7 @@ describe('Item Component', () => {
     fireEvent.click(screen.getByRole('checkbox'))
 
     await waitFor(() => {
-      expect(updateDuty).toHaveBeenCalledWith('1', 'Test Duty', true)
+      expect(updateDuty).toHaveBeenCalledWith('1', undefined, true)
     })
     expect(mockSaveCallback).toHaveBeenCalled()
   })
