@@ -5,7 +5,9 @@
   "scripts": {
     "start": "nodemon",
     "test": "jest",
-    "setup-db": "ts-node src/database/setup.ts"
+    "setup-db": "ts-node src/database/setup.ts",
+    "build": "tsc",
+    "start-prod": "node dist/server.js"
   },
   "author": "Josh",
   "description": "backend for nex todo app",
@@ -22,6 +24,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.12",
     "@types/pg": "^8.11.6",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.16.1",

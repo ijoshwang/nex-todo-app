@@ -46,7 +46,7 @@ export default function EditItem({
         name="itemName"
         control={control}
         rules={{
-          maxLength: 100, // Fixed the max length here
+          maxLength: 100,
         }}
         render={({ field }) => (
           <Input
