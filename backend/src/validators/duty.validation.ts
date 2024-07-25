@@ -5,7 +5,8 @@ export const createDutyValidation = [
     .isString()
     .withMessage('Name must be a string')
     .isLength({ min: 1, max: 100 })
-    .withMessage('Name must be between 1 and 100 characters'),
+    .withMessage('Name must be between 1 and 100 characters')
+    .trim(),
 ]
 
 export const updateDutyValidation = [
@@ -15,7 +16,8 @@ export const updateDutyValidation = [
     .isString()
     .withMessage('Name must be a string')
     .isLength({ min: 1, max: 100 })
-    .withMessage('Name must be between 1 and 100 characters'),
+    .withMessage('Name must be between 1 and 100 characters')
+    .trim(),
   body('is_completed')
     .optional()
     .isBoolean()
