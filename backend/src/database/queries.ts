@@ -1,4 +1,5 @@
 export const queries = {
+  installUUIDExtension: 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";',
   createTable: `
     CREATE TABLE IF NOT EXISTS duties (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

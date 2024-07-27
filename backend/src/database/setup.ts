@@ -22,6 +22,7 @@ const setupDb = async () => {
   try {
     // await pool.query(queries.dropTable)
     // console.log('Table droped!')
+    await pool.query(queries.installUUIDExtension)
     await pool.query(queries.createTable)
     console.log('Table created!')
     await seedData()

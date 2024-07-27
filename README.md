@@ -79,9 +79,25 @@ Make sure to replace your_password with the actual password you set for your Pos
 
 Adjust any other environment variables as needed for your specific setup.
 
-### Run the Application
+### Run the Application with Docker
 
-You can run both the backend and frontend concurrently using a single command from the root directory:
+You can run the entire application using Docker for a seamless setup.
+
+1. Ensure Docker and Docker Compose are installed on your machine.
+2. Use the .env file in the root directory.
+3. Run the following command to start the services:
+
+```sh
+docker compose up --build
+```
+
+This will build and start all the services defined in your compose.yaml file.
+
+Visit the frontend at [http://localhost:5000](http://localhost:5000)
+
+### Run the Application without Docker
+
+You can also run both the backend and frontend concurrently using a single command from the root directory:
 
 ```
 npm start
